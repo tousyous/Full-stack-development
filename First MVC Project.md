@@ -131,3 +131,43 @@ In `Index.cshtml` we add:
 ```
 * het `asp-action` attribuut van het `a`-element bepaalt welke actie er wordt uitgevoerd
 
+## Building a form
+
+To build a form in `RsvpForm.cshtml` include this at the top of the page:
+
+```html
+@model PartyInvites.Models.GuestResponse
+```
+* Dit geeft aan dat de view een **GuestResponse** object als view model verwacht
+
+De form zelf ziet er als volgt uit:
+
+```html
+<form asp-action="RsvpForm" method="post">
+	<div>
+		<label asp-for="Name">Name:</label>
+		<input asp-for="Name" />
+	</div>
+	<div>
+		<label asp-for="Email">Email:</label>
+		<input asp-for="Email" />
+	</div>
+	<div>
+		<label asp-for="Phone">Phone:</label>
+		<input asp-for="Phone" />
+	</div>
+	<div>
+		<label asp-for="WillAttend">Will you attend?</label>
+		<select asp-for="WillAttend">
+		<option value="">Choose an option</option>
+		<option value="true">Yes</option>
+		<option value="false">Yes</option>
+		</select>
+	</div>
+	<button type="submit">Submit RSVP</button>
+</form>
+```
+
+* voor elk attribuut van het **GuestResponse** object wordt een form-element met `asp-for` tag helper attribuut aangemaakt
+    * deze tag helper voorziet het **for** attribuut van het label en de **id** en **name** attributen van de input-elementen
+* de form wordt met de `asp-action` en `post` methode naar dezelfde actie (en dus view) gestuurd
