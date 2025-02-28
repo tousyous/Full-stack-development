@@ -211,3 +211,5 @@ decimal priceFilterTotal = productArray
 * `=>` depicts *goes to*
 * and returns a boolean value
     * for multiple statements `{ }` are used
+
+More info: https://endjin.com/blog/2022/04/understanding-lambda-expressions-in-csharp
