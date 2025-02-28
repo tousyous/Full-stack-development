@@ -14,6 +14,16 @@ global using LanguageFeatures.Models;
 
 **Implicit using** statements are *global using* statements that are always available, without the need to declare them.
 
+### Outline of this chapter
+
+1. [Null state analysis](#null-state-analysis) !
+2. [String interpolation](#string-interpolation) !
+3. [Using object and collection initializers](#using-object-and-collection-initializers) !
+4. [Target-typed new expressions](#target-typed-new-expressions)
+5. [Pattern-matching](#pattern-matching)
+6. [Extension methods](#extension-methods)
+7. [Lambda expressions](#lambda-expressions) !
+
 ## Null state analysis
 
 To prevent *null reference exceptions* during runtime, the compiler will try to identify these attempts in what we call a **null state analysis**.
@@ -71,3 +81,131 @@ string val = products[0]!.Name
 #pragma warnng disable CS8602
 string val = products[0].Name
 ```
+
+## String interpolation
+
+= creating output by inserting variables in strings
+
+```cs
+string s = $"My name is {students[0]?.Name ?? "Tom"} and I am {students[0]?.Age ?? 5} years old."
+```
+
+## Using object and collection initializers
+
+To initiliaze an **object** or a **collection**, you can replace:
+
+```cs
+// an object
+Product kayak = new Product();
+kayak.Name = "Kayak";
+kayak.Price = 275M;
+
+// an array of strings
+string[] names = new string[2];
+names[0] = "Jan";
+names[1] = "Piet";
+```
+
+by making use of `{  }`:
+
+```cs
+Product kayak = new Product {Name = "Kayak", Price = 275M};
+
+string[] names = new string[] {"Jan", "Piet"};
+```
+
+Also for **dictionaries** (Map ADT), **index intilializers** have been developed:
+
+```cs
+Dictionary<string, Product> products = new Dictionary<string, Product> {
+    ["kayak"] = new Product {Name = "Kayak", Price = 275M},
+    ["boat"] = new Product {Name = "Boat", Price = 165M}
+};
+```
+
+## Target-typed new expressions
+
+To shorten the initialization of a variable, you can use the `new ()` keyword, without defining the collection type:
+
+```cs
+Dictionary<string, Product> products = new () {
+    ["kayak"] = new Product {Name = "Kayak", Price = 275M},
+    ["boat"] = new Product {Name = "Boat", Price = 165M}
+};
+```
+
+## Pattern-matching
+
+In C# you can easily perform a **type-check** using the `is` keyword:
+
+```cs
+if(data[i] is decimal d) {
+    total += d;
+}
+```
+
+This can also be used in **switch** statements, without the *is* keyword, w or w/o the `when` keyword:
+
+```cs
+switch (data[i]) {
+    case decimal dec:
+        s = "this is a decimal";
+        break;
+    case int number when int > 50:
+        s = "this is an int greater than 50";
+        break;
+}
+```
+
+## Extension methods
+
+Extension methods are created to extend third party classes with new methods, when the source code of these classes is not available.
+
+```cs
+public static class MyExtensionMethods {
+    public static decimal TotalPrices(this IEnumerable<Product?> products) {
+        decimal total = 0;
+        foreach (Product? prod in products) {
+            total += prod?.Price ?? 0;
+        }
+        return total;
+    }
+}
+```
+* both the class and the extension methods are **static**
+* the **this** keyword in front of the first paramater marks the method as an extension method
+* the first parameter depicts the class to which the extension method applies
+    * in this example the method was applied to the `IEnumerable<Product?>` interface
+
+You can use extension methods **to filter on collections**:
+
+```cs
+public static IEnumerable<Product?> FilterByPrice(this IEnumerable<Product?> productEnum, decimal minimumPrice) {
+    foreach (Product? prod in productEnum) {
+        if ((prod?.Price ?? 0) >= minimumPrice) {
+            yield return prod;
+        }
+    }
+}
+```
+* the **return type** is the same as the first parameter: an `IEnumerable<Product?>`
+* the keyword `yield` is used before return of the items
+
+## Lambda expressions
+
+= a shortcut to defining an implementation of a functional interface (= an interface with only one abstract method)
+
+An example: 
+
+```cs
+decimal priceFilterTotal = productArray
+    .Filter(p => (p?.Price ?? 0) >= 20)
+    .TotalPrice();
+```
+
+* the lambda expression is `p => (p?.Price ?? 0) >= 20` 
+* with one parameter `p`, w/o a type, which is inferred automatically
+    * for multiple parameters `( )` are used
+* `=>` depicts *goes to*
+* and returns a boolean value
+    * for multiple statements `{ }` are used
