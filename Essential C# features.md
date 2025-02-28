@@ -1,5 +1,7 @@
 # Essential C# features
 
+This chapter uses the LanguageFeatures project.
+
 The `Program.cs` file is the only file in a project containing **top-level statements** = code statements outside of a namespace or file that are used to remove unnecessary code structure from class files
 
 At the top of a file `using`-statements will declare dependencies on the namespace that it requires
